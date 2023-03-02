@@ -17,7 +17,7 @@ class UsersView(Resource):
     def post(self):
         req_json = request.json
         ent = User(**req_json)
-
+        ent.password = User.create_hash(User, ent.password)
         db.session.add(ent)
         db.session.commit()
         return "", 201, {"location": f"/users/{ent.id}"}
@@ -27,6 +27,7 @@ class UsersView(Resource):
         req_json = request.json
         user.username = req_json.get("username")
         user.password = req_json.get("password")
+        user.password = User.create_hash(User, user.password)
         user.role = req_json.get("role")
         user.year = req_json.get("year")
         db.session.add(user)
